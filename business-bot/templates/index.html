@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Business Bot</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        margin: 10px 0;
+        border: none;
+        color: white;
+        cursor: pointer;
+      }
+
+      .blue {
+        background-color: rgb(234, 240, 246);
+        color: black;
+      }
+
+      .green {
+        background-color: #28a745;
+      }
+
+      .success {
+        color: green;
+      }
+
+      .error {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>📡 Business Directory Bot</h1>
+
+    <form method="post">
+      <button
+        name="action"
+        value="update_profile"
+        class="btn {{ 'green' if last_action == 'update_profile' else 'blue' }}"
+      >
+        ✏️ Update Profile
+      </button>
+      <br />
+      <button
+        name="action"
+        value="post_feed"
+        class="btn {{ 'green' if last_action == 'post_feed' else 'blue' }}"
+      >
+        🖼️ Post to Instagram
+      </button>
+    </form>
+    {% if message %}
+    <p class="{{ 'success' if '✅' in message else 'error' }}">{{ message }}</p>
+    {% endif %} {% if profile_url %}
+    <p>
+      🔗 <a href="{{ profile_url }}" target="_blank">View Instagram Profile</a>
+    </p>
+    {% endif %}
+  </body>
+</html>
