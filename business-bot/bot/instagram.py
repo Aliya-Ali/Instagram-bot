@@ -2,14 +2,45 @@ from instagrapi import Client
 import os
 
 # ✅ Login to Instagram
-def login_instagram(username: str, password: str):
+from instagrapi import Client
+from instagrapi.exceptions import ChallengeRequired
+import os
+
+def get_instagram_client(username: str, password: str):
     cl = Client()
+
+    # Load previous session if exists
+    if os.path.exists(f"{username}_session.json"):
+        cl.load_settings(f"{username}_session.json")
+
     try:
         cl.login(username, password)
-        print("✅ Logged in successfully!")
+        cl.dump_settings(f"{username}_session.json")
+        print("✅ Logged in using saved session")
         return cl
+
+    except ChallengeRequired:
+        print("⚠️ Challenge required. Sending code to email or phone...")
+
+        try:
+            cl.challenge_resend()
+            code = input("📧 Enter the code sent to your email or phone: ")
+            result = cl.challenge_code(code)
+
+            if result:
+                print("✅ Challenge passed.")
+                cl.dump_settings(f"{username}_session.json")
+                return cl
+            else:
+                print("❌ Challenge failed.")
+                return None
+
+        except Exception as e:
+            print(f"❌ Error handling challenge: {e}")
+            return None
+
     except Exception as e:
-        print(f"❌ Login failed: {e}")
+        print(f"❌ Login error: {e}")
         return None
 
 # ✅ Update full profile
